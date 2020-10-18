@@ -28,8 +28,10 @@ labels <- rbind(y_test_labels, y_train_labels)
 colnames(labels) <- c("activity_id")
 
 mean_std_measures <- cbind(mean_std_measures, labels)
+
 # Get the actual activity names from activity_labels.txt
 activities <- read.table("activity_labels.txt", sep=" ", col.names = c("activity_id", "activity_name"))
+
 # Join data set by activity number/id
 activity_names <- character()
 
@@ -38,8 +40,8 @@ for(num in 1:nrow(mean_std_measures)){
 }
 
 mean_std_measures$activity_name <- activity_names
-# 4. Appropriately labels the data set with descriptive variable names.
 
+# 4. Appropriately labels the data set with descriptive variable names.
 # Rename resulting dataset from step 3 (mean_std_measures) using features_info
 new_colnames <- gsub("\\(\\)", "", colnames(mean_std_measures))
 new_colnames <- gsub("-", "_", new_colnames)
@@ -51,8 +53,8 @@ new_colnames <- gsub("mag", "Magnitude", new_colnames,ignore.case = TRUE)
 new_colnames <- gsub("BodyBody", "Body", new_colnames)
 
 colnames(mean_std_measures) <- new_colnames
-# 5. From the data set in step 4, creates a second,
-# independent tidy data set with the average of
+
+# 5. From the data set in step 4, creates a second, independent tidy data set with the average of
 # each variable for each activity and each subject.
 # Calculate average by activity and subject
 subject_test <- read.table("./test/subject_test.txt")
@@ -65,5 +67,6 @@ final_result <- mean_std_measures %>%
 tidy_data <- final_result %>% group_by(subject, activity_name) %>%
     summarise_at(vars(-activity_id), mean,na.rm=TRUE)
 
+# Write tidy_data into a txt file
 write.table(tidy_data, file="tidy_data.txt", sep='\t', row.names=FALSE)
 
